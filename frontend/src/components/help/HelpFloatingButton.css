@@ -1,0 +1,92 @@
+/* HelpFloatingButton.css */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@400;700&display=swap');
+
+.help-fab-wrap {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 45000;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+}
+
+.help-fab-btn {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: linear-gradient(135deg, #2d1b4e 0%, #0f0518 100%); /* Roxo profundo */
+  border: 1px solid rgba(255, 215, 0, 0.4); /* Borda Dourada */
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 
+    0 0 15px rgba(157, 78, 221, 0.3),
+    inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.help-fab-btn:hover {
+  transform: scale(1.1);
+  border-color: #ffd700;
+  box-shadow: 
+    0 0 25px rgba(255, 215, 0, 0.4),
+    inset 0 0 5px rgba(157, 78, 221, 0.5);
+}
+
+.help-fab-btn:active {
+  transform: scale(0.95);
+}
+
+/* Ícone de Imagem */
+.fab-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Fallback (Interrogação) */
+.fab-fallback {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+/* Balão de "Ajuda" */
+.fab-bubble {
+  position: absolute;
+  right: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(15, 5, 24, 0.9);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #eaddff;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+}
+
+/* Seta do balão */
+.fab-bubble::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  margin-top: -6px;
+  border-width: 6px 0 6px 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent rgba(255, 215, 0, 0.3);
+}

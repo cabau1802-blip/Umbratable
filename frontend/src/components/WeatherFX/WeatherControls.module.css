@@ -1,0 +1,98 @@
+.panel {
+  /*
+    Renderizado dentro do menu do clima (CampaignSession).
+    Mantemos como relative para não "vazar" e sobrepor painéis externos.
+  */
+  position: relative;
+  width: 240px;
+  background: rgba(15, 20, 30, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  color: #e0e6ed;
+  font-family: sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8fa3bf;
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+.buttonGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #a0aab5;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.btn.active {
+  background: rgba(60, 100, 200, 0.3);
+  border-color: #5a8dee;
+  color: #8ab4f8;
+  box-shadow: 0 0 10px rgba(90, 141, 238, 0.2);
+}
+
+.icon {
+  font-size: 1.2rem;
+}
+
+.label {
+  font-size: 0.75rem;
+}
+
+.sliderContainer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 12px;
+}
+
+.sliderHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #8fa3bf;
+  margin-bottom: 8px;
+}
+
+.slider {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #5a8dee;
+  cursor: pointer;
+  border: 2px solid #1a1f2e;
+}

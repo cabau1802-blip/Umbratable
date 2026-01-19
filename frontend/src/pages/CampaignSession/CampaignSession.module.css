@@ -1,0 +1,1064 @@
+.page {
+  --bg-deep: #050505;
+  --glass-surface: rgba(20, 22, 28, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --accent-glow: rgba(212, 175, 55, 0.15); /* Dourado RPG */
+
+  --accent: #facc15;
+  --accent-2: #8b5cf6;
+  --danger: #ef4444;
+  --success: #22c55e;
+
+  --text: #e2e8f0;
+  --text-muted: rgba(226, 232, 240, 0.72);
+  --text-faint: rgba(226, 232, 240, 0.55);
+
+  --surface-0: rgba(8, 9, 12, 0.82);
+  --surface-1: rgba(20, 22, 28, 0.65);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --surface-3: rgba(0, 0, 0, 0.35);
+
+  --border-1: rgba(255, 255, 255, 0.10);
+  --border-2: rgba(255, 255, 255, 0.16);
+
+  --shadow-soft: 0 10px 30px rgba(0,0,0,0.40);
+  --shadow-deep: 0 24px 70px rgba(0,0,0,0.65);
+
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 18px;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-1: 120ms;
+  --dur-2: 180ms;
+  --dur-3: 240ms;
+
+  min-height: 100vh;
+  /* Fundo complexo: Cor sólida escura + Vinheta + Gradients sutis de "neblina" */
+  background: 
+    radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 20%, rgba(0,0,0,0.8) 90%),
+    radial-gradient(1200px 800px at 15% 10%, rgba(70, 80, 120, 0.15), transparent 60%),
+    radial-gradient(1000px 800px at 85% 90%, rgba(120, 50, 50, 0.1), transparent 55%),
+    var(--bg-deep);
+
+  color: #e2e8f0;
+  font-family: 'Inter', sans-serif; /* Garante fonte limpa */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden; /* Evita scroll duplo na página inteira */
+}
+
+/* ==========================================================
+   Camadas de ambience (noise + glow) | NÃO afeta lógica
+   ========================================================== */
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(900px 520px at 70% 20%, rgba(250, 204, 21, 0.07), transparent 60%),
+    radial-gradient(900px 520px at 20% 80%, rgba(139, 92, 246, 0.06), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.20));
+  mix-blend-mode: screen;
+  opacity: 0.7;
+}
+
+.page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.72) 100%);
+  opacity: 0.9;
+}
+
+.page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================================
+   Acessibilidade e estados consistentes (hover/focus)
+   ========================================================== */
+.page :is(button, [role="button"], a, input, select, textarea) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.page :is(button, [role="button"], a, input, select, textarea):focus-visible {
+  outline: 2px solid rgba(250, 204, 21, 0.55);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.12);
+}
+
+.page :is(input, select, textarea) {
+  transition: border-color var(--dur-2) var(--ease-out), background var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
+}
+
+.page :is(button, [role="button"]) {
+  transition: transform var(--dur-1) var(--ease-out), background var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out),
+    opacity var(--dur-2) var(--ease-out), filter var(--dur-2) var(--ease-out);
+}
+
+.page :is(button, [role="button"]):active {
+  transform: translateY(1px);
+}
+
+/* Scrollbars (discretos) */
+.page *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.page *::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.10);
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+.page *::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.16);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.page *::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ==========================================================
+   Motion (microinterações) | respeita prefers-reduced-motion
+   ========================================================== */
+@keyframes uiFadeUp {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes uiModalIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header flutuante */
+.header {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+
+  background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  z-index: 100;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-family: 'Cinzel', serif; /* Se tiver importado, senão fallback serif */
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #f1f5f9;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.subtitle {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #94a3b8;
+  opacity: 0.8;
+}
+
+/* Layout Principal (Grid) */
+.grid {
+  flex: 1;
+  display: grid;
+  /* Painéis laterais flutuam sobre o mapa ou empurram, aqui mantemos a estrutura */
+  grid-template-columns: 320px 1fr 340px; 
+  min-height: 0; /* Importante para o scroll interno funcionar */
+  position: relative;
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+  .grid { grid-template-columns: 280px 1fr; }
+  /* O chat da direita pode virar overlay ou sumir em mobile, ajuste conforme lógica existente */
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+/* Estilo geral para Cards/Containers dentro do Grid se usados diretamente */
+.card {
+  background: var(--glass-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Animações de UI */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.cardBody {
+  animation: fadeInScale 0.3s ease-out;
+}
+
+.button {
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.92);
+  padding: 9px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.button:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.20);
+  transform: translateY(-1px);
+}
+
+.button:focus-visible {
+  outline: 2px solid rgba(120,120,255,0.65);
+  outline-offset: 2px;
+}
+
+.buttonPrimary {
+  border-color: rgba(120,120,255,0.35);
+  background: rgba(120,120,255,0.18);
+}
+
+.badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+.muted {
+  opacity: 0.7;
+}
+@keyframes pingRipple {
+  0% {
+    width: 0px;
+    height: 0px;
+    opacity: 1;
+    border-width: 4px;
+  }
+  100% {
+    width: 200px; /* Tamanho final da onda */
+    height: 200px;
+    opacity: 0;
+    border-width: 0px;
+  }
+}
+
+@keyframes pingFade {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+}
+
+
+
+/* ==========================================================
+   Chat UX (LoL-like): hint, emoji, mentions
+   ========================================================== */
+.chatHint{
+  margin: 10px 10px 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(10, 10, 14, 0.55);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+  animation: uiFadeUp var(--dur-2) var(--ease-out);
+}
+.chatHintTitle{
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: rgba(250, 204, 21, 0.92);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+.chatHintText{
+  font-size: 12px;
+  color: rgba(226,232,240,0.78);
+  line-height: 1.25;
+}
+.hintPill{
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: rgba(226,232,240,0.92);
+  font-weight: 600;
+  font-size: 11px;
+  transform: translateY(-1px);
+}
+
+.chatInputArea{
+  position: relative;
+  gap: 8px;
+  align-items: center;
+}
+
+.emojiBtn{
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.35);
+  color: rgba(226,232,240,0.92);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+}
+.emojiBtn:hover{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(250,204,21,0.25);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+}
+
+.chatInputWrap{
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.chatInput{
+  width: 100%;
+}
+
+.chatInputWhisper{
+  outline: 1px solid rgba(180, 140, 255, 0.25);
+  box-shadow: 0 0 0 3px rgba(180, 140, 255, 0.10);
+}
+
+.sendBtn{
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(250,204,21,0.25);
+  background: rgba(250,204,21,0.10);
+  color: rgba(250,204,21,0.95);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+}
+.sendBtn:hover{
+  background: rgba(250,204,21,0.14);
+  border-color: rgba(250,204,21,0.40);
+}
+
+.emojiPopover{
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 10px);
+  /* O popover precisa caber SEM estourar a largura interna do painel */
+  width: min(360px, calc(100% - 8px));
+  max-width: 360px;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(12, 13, 18, 0.78);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.65);
+  backdrop-filter: blur(14px);
+  transform-origin: bottom left;
+  animation: uiFadeUp var(--dur-2) var(--ease-out);
+  z-index: 40;
+  box-sizing: border-box;
+  overflow: hidden; /* impede emojis “vazarem” */
+}
+
+.emojiGrid{
+  display: grid;
+  /* Auto-fit evita overflow quando a largura útil fica menor que (colunas * célula + gaps) */
+  grid-template-columns: repeat(auto-fit, minmax(36px, 1fr));
+  gap: 8px;
+  justify-items: center;
+}
+
+.emojiCell{
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+}
+.emojiCell:hover{
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(250,204,21,0.25);
+  transform: translateY(-1px);
+}
+
+.mentionPopover{
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 10px);
+  width: min(340px, calc(100vw - 110px));
+  padding: 8px;
+  border-radius: 14px;
+  background: rgba(12, 13, 18, 0.78);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.65);
+  backdrop-filter: blur(14px);
+  z-index: 45;
+  animation: uiFadeUp var(--dur-2) var(--ease-out);
+}
+
+.mentionItem{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(226,232,240,0.92);
+  cursor: pointer;
+  text-align: left;
+}
+.mentionItem:hover{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.10);
+}
+.mentionActive{
+  background: rgba(250,204,21,0.10);
+  border-color: rgba(250,204,21,0.22);
+}
+.mentionName{
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+}
+.mentionTag{
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(139,92,246,0.12);
+  border: 1px solid rgba(139,92,246,0.18);
+  color: rgba(226,232,240,0.86);
+}
+
+.logWhisper{
+  border-left: 2px solid rgba(139, 92, 246, 0.55);
+  padding-left: 10px;
+  margin-left: 2px;
+}
+
+
+
+
+.logEmote{
+  font-style: italic;
+  color: rgba(226,232,240,0.9);
+  opacity: 0.95;
+}
+
+.logRoll{
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.rollBadge{
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.10);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  color: rgba(226,232,240,0.88);
+  flex: 0 0 auto;
+}
+
+.rollText{
+  font-variant-numeric: tabular-nums;
+}
+
+/* Roll (template avançado) */
+.logRollCard{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(12, 14, 18, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+
+.rollHeader{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 22px;
+}
+
+.rollExpr{
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  color: rgba(226,232,240,0.92);
+  letter-spacing: 0.01em;
+}
+
+.rollMode{
+  margin-left: auto;
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.10);
+  border: 1px solid rgba(245, 158, 11, 0.18);
+  color: rgba(226,232,240,0.90);
+}
+
+.rollCrit{
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(226,232,240,0.92);
+}
+
+.rollCritSuccess{
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.22);
+}
+
+.rollCritFail{
+  background: rgba(239, 68, 68, 0.10);
+  border-color: rgba(239, 68, 68, 0.22);
+}
+
+.rollBody{
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.rollTotalWrap{
+  min-width: 72px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.rollTotal{
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.rollTotalSub{
+  margin-top: 4px;
+  font-size: 11px;
+  color: rgba(226, 232, 240, 0.60);
+}
+
+.rollBreakdown{
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+  min-width: 0;
+}
+
+.rollDiceRow{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.rollDiceLabel{
+  font-size: 12px;
+  color: rgba(226, 232, 240, 0.60);
+}
+
+.rollDiceList{
+  font-size: 12px;
+  color: rgba(226, 232, 240, 0.90);
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 520px;
+}
+
+.rollDie{
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  padding: 4px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.rollDieSep{
+  font-size: 12px;
+  color: rgba(226, 232, 240, 0.50);
+}
+
+.rollChosen{
+  font-size: 12px;
+  color: rgba(226, 232, 240, 0.82);
+}
+
+.rollModRow{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.rollModValue{
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(226, 232, 240, 0.92);
+}
+
+
+/* Whisper pill (estilo sutil, inspirado em LoL) */
+.whisperPill{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  max-width: 45%;
+  overflow:hidden;
+}
+
+.whisperLock{
+  opacity:0.9;
+  font-size:12px;
+  line-height:1;
+}
+
+.whisperLabel{
+  font-size:12px;
+  letter-spacing:0.2px;
+  color: rgba(255,255,255,0.92);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.whisperClear{
+  margin-left:auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px;
+  height:18px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(0,0,0,0.25);
+  color: rgba(255,255,255,0.75);
+  cursor:pointer;
+}
+
+.whisperClear:hover{
+  background:rgba(0,0,0,0.38);
+  color: rgba(255,255,255,0.9);
+}
+
+
+
+/* =========================
+   Chat auto-scroll (jump to bottom)
+   ========================= */
+.chatLogWrap{
+  position: relative;
+}
+
+.jumpToBottomBtn{
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(2, 6, 23, 0.62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(241, 245, 249, 0.95);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+  cursor: pointer;
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.jumpToBottomBtn:hover{
+  transform: translateX(-50%) translateY(-1px);
+}
+
+.jumpToBottomBadge{
+  min-width: 22px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.22);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: rgba(224, 231, 255, 0.98);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .jumpToBottomBtn{
+    transition: none;
+  }
+}
+
+
+/* =========================
+   Players Panel (Sessão)
+   ========================= */
+.playersPanel {
+  margin: 10px 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 12px;
+  background: rgba(10, 10, 12, 0.50);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+.playersHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 0;
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  text-align: left;
+  transition: background 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.playersHeader:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.playersTitle {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.playersMeta {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+  font-size: 12px;
+  margin-left: auto;
+}
+
+.playersChevron {
+  opacity: 0.85;
+  font-size: 14px;
+}
+
+.playersBody {
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.playerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.playerMain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.25);
+  flex: 0 0 auto;
+}
+
+.statusOnline {
+  background: rgba(34, 197, 94, 0.95);
+}
+
+.statusOffline {
+  background: rgba(148, 163, 184, 0.55);
+}
+
+.playerName {
+  font-weight: 600;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.playerTag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  opacity: 0.9;
+}
+
+.playerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.playerActionBtn {
+  padding: 6px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.22);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 12px;
+  cursor: pointer;
+  transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1), background 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.playerActionBtn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.playerActionBtnActive {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playersHeader,
+  .playerActionBtn {
+    transition: none;
+  }
+  .playerActionBtn:hover {
+    transform: none;
+  }
+}
+
+
+
+/* ===== Cinematic Mode ===== */
+.cinematicVignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20020;
+  background:
+    radial-gradient(900px 520px at 50% 40%, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.22) 55%, rgba(0,0,0,0.66) 100%),
+    linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.35));
+}
+
+.cinematicFloatBtn {
+  position: fixed;
+  left: 14px;
+  top: 14px;
+  z-index: 20060; /* acima da vinheta e do mapa */
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(250,204,21,0.30);
+  background: rgba(250,204,21,0.10);
+  color: rgba(250,204,21,0.96);
+  font-weight: 950;
+  letter-spacing: 0.2px;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.68), inset 0 1px 0 rgba(255,255,255,0.06);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              background 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-color 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cinematicFloatBtn:hover {
+  transform: translateY(-1px);
+  background: rgba(250,204,21,0.14);
+  border-color: rgba(250,204,21,0.40);
+}
+
+.cinematicFloatBtn:active {
+  transform: translateY(0px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinematicFloatBtn {
+    transition: none;
+  }
+  .cinematicFloatBtn:hover {
+    transform: none;
+  }
+}
+
+
+/* ===== Cinematic Focus (click-to-focus) ===== */
+.cinematicFloatBtnAlt {
+  position: fixed;
+  left: 14px;
+  top: 58px; /* abaixo do botão de sair */
+  z-index: 20050;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(229,231,235,0.96);
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), background 160ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cinematicFloatBtnAlt:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.09);
+}
+.cinematicFloatBtnAltOn {
+  border-color: rgba(250,204,21,0.40);
+  background: rgba(250,204,21,0.10);
+  color: rgba(250,204,21,0.96);
+}
+
+.cinematicFocusHint {
+  position: fixed;
+  left: 14px;
+  top: 104px;
+  z-index: 20050;
+  padding: 8px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.45);
+  color: rgba(229,231,235,0.92);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.62);
+}
+
+.cinematicSpotlightLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1200;
+}
+
+.cinematicSpotlight {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: radial-gradient(circle at center, rgba(250,204,21,0.16), rgba(0,0,0,0) 62%);
+  box-shadow: 0 0 0 1px rgba(250,204,21,0.22), 0 40px 120px rgba(0,0,0,0.65);
+  animation: cinematicSpotlightPulse 1200ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes cinematicSpotlightPulse {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.88); filter: blur(0px); }
+  25% { opacity: 1; transform: translate(-50%, -50%) scale(1.02); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.10); filter: blur(0.2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinematicFloatBtnAlt, .cinematicFloatBtnAltOn { transition: none; }
+  .cinematicSpotlight { animation: none; opacity: 0.95; }
+}

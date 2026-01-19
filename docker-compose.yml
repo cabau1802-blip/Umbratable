@@ -1,0 +1,97 @@
+
+version: '3.8'
+
+services:
+  # --- Banco de Dados (PostgreSQL) ---
+  db:
+    image: postgres:15
+    container_name: umbratable-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres  # Defina sua senha
+      POSTGRES_DB: umbratable_homolog
+    volumes:
+      # O PULO DO GATO: Injeta o backup na criação do banco
+      - ./backup_migracao.sql:/docker-entrypoint-initdb.d/init.sql
+      # Persistência dos dados (para não perder quando reiniciar)
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - umbratable-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --- Backend (Node.js) ---
+  backend:
+    build: ./backend
+    container_name: umbratable-backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Conexão interna via rede Docker
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres 
+      DB_NAME: umbratable_homolog
+      DB_PORT: 5432
+      PORT: 3000
+    networks:
+      - umbratable-net
+
+  # --- Frontend (Vite) ---
+  frontend:
+    build: ./frontend
+    container_name: umbratable-frontend
+    restart: always
+    environment:
+      # Se o front bater no Nginx, a URL base é a própria raiz
+      VITE_API_URL: /api
+    networks:
+      - umbratable-net
+
+  # --- Nginx (Proxy Reverso) ---
+  nginx:
+    image: nginx:alpine
+    container_name: umbratable-nginx
+    restart: always
+    ports:
+      - "8080:80" # Acessível externamente na porta 8080 (ou mude para 80 se estiver livre)
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - umbratable-net
+  # N8N --- Automação de IA ----    
+  n8n:
+    image: n8nio/n8n
+    container_name: umbratable-n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=n8n
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://homolog.umbratable.com.br:5678/ # Ou localhost se for teste local
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - umbratable-net
+
+# --- Definição da Rede e Volumes ---
+networks:
+  umbratable-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  n8n_data: 

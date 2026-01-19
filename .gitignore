@@ -1,0 +1,15 @@
+# Dumps e backups
+*.sql
+*.tar.gz
+
+# Node
+node_modules/
+dist/
+build/
+
+# Logs
+*.log
+
+# Docker
+.env
+
